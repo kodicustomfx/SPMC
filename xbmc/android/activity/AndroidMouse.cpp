@@ -50,20 +50,20 @@ bool CAndroidMouse::onMouseEvent(AInputEvent* event)
 #ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s idx:%i, id:%i", __PRETTY_FUNCTION__, mousePointerIdx, mousePointerId);
 #endif
-  float x = AMotionEvent_getX(event, mousePointerIdx);
-  float y = AMotionEvent_getY(event, mousePointerIdx);
+  CPoint in(AMotionEvent_getX(event, mousePointerIdx), AMotionEvent_getY(event, mousePointerIdx));
+  CPoint out = CXBMCApp::MapDroidToGui(in);
 
   switch (mouseAction)
   {
     case AMOTION_EVENT_ACTION_UP:
     case AMOTION_EVENT_ACTION_DOWN:
-      MouseButton(x,y,mouseAction,AMotionEvent_getButtonState(event));
+      MouseButton(out.x, out.y, mouseAction, AMotionEvent_getButtonState(event));
       return true;
     case AMOTION_EVENT_ACTION_SCROLL:
-      MouseWheel(x, y, AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_VSCROLL, mousePointerIdx));
+      MouseWheel(out.x, out.y, AMotionEvent_getAxisValue(event, AMOTION_EVENT_AXIS_VSCROLL, mousePointerIdx));
       return true;
     default:
-      MouseMove(x,y);
+      MouseMove(out.x, out.y);
       return true;
   }
   return false;
